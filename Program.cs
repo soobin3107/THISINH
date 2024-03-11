@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ThiSinh
 {
@@ -54,25 +54,10 @@ namespace ThiSinh
     {
         const int N = 100;
 
-        // Hàm Main để chạy chương trình
-        public static void Main()
-        {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-            ThiSinh[] ts = new ThiSinh[N];
-            int n = 0;
-
-            // Gọi hàm nhập danh sách thí sinh từ bên ngoài class
-            NhapDSTS(ts, ref n);
-            // Gọi hàm xuất danh sách thí sinh từ bên ngoài class
-            XuatDSTS(ts, n);
-            Console.ReadLine();
-        }
-
         // Hàm nhập danh sách thí sinh
         static void NhapDSTS(ThiSinh[] ts, ref int n)
         {
-            Console.Write("Nhập số lượng Thí Sinh: ");
+            Console.Write("\nNhập số lượng Thí Sinh: ");
             n = int.Parse(Console.ReadLine());
             for (int i = 0; i < n; i++)
             {
@@ -86,13 +71,105 @@ namespace ThiSinh
         // Hàm xuất danh sách thí sinh
         static void XuatDSTS(ThiSinh[] ts, int n)
         {
-            Console.WriteLine("=-=DANH SÁCH CÁC THÍ SINH=-=");
+            Console.WriteLine("\n=-=DANH SÁCH CÁC THÍ SINH=-=");
             for (int i = 0; i < n; i++)
             {
                 Console.WriteLine($"---Thí Sinh thứ {i + 1}---");
                 NhapXuatThiSinh.XuatThiSinh(ts[i]);
                 Console.WriteLine("---------------------------");
             }
+        }
+
+        // Hàm chỉnh sửa thông tin của một thí sinh
+        static void ChinhSuaDSTS(ThiSinh[] ts, int n)
+        {
+            Console.Write("Nhập mã thí sinh cần chỉnh sửa: ");
+            string maThiSinh = Console.ReadLine();
+            bool found = false;
+            for (int i = 0; i < n; i++)
+            {
+                if (ts[i].MaThiSinh == maThiSinh)
+                {
+                    Console.WriteLine("Nhập thông tin mới:");
+                    NhapXuatThiSinh.NhapThiSinh(ref ts[i]);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                Console.WriteLine("Không tìm thấy thí sinh có mã số đã nhập.");
+            }
+        }
+
+        // Hàm xóa thông tin của một thí sinh
+        static void XoaDSTS(ThiSinh[] ts, ref int n)
+        {
+            Console.Write("Nhập mã thí sinh cần xóa: ");
+            string maThiSinh = Console.ReadLine();
+            bool found = false;
+            for (int i = 0; i < n; i++)
+            {
+                if (ts[i].MaThiSinh == maThiSinh)
+                {
+                    for (int j = i; j < n - 1; j++)
+                    {
+                        ts[j] = ts[j + 1];
+                    }
+                    n--;
+                    found = true;
+                    Console.WriteLine("Xóa thành công.");
+                    break;
+                }
+            }
+            if (!found)
+            {
+                Console.WriteLine("Không tìm thấy thí sinh có mã số đã nhập.");
+            }
+        }
+
+        // Hàm Main để chạy chương trình
+        public static void Main()
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            ThiSinh[] ts = new ThiSinh[N];
+            int n = 0;
+
+            int luaChon;
+            do
+            {
+                Console.WriteLine("\n---MENU---");
+                Console.WriteLine("1. Nhập dữ liệu");
+                Console.WriteLine("2. Xuất dữ liệu");
+                Console.WriteLine("3. Chỉnh sửa dữ liệu");
+                Console.WriteLine("4. Xóa dữ liệu");
+                Console.WriteLine("5. Thoát chương trình");
+                Console.Write("Nhập lựa chọn của bạn: ");
+                luaChon = int.Parse(Console.ReadLine());
+
+                switch (luaChon)
+                {
+                    case 1:
+                        NhapDSTS(ts, ref n);
+                        break;
+                    case 2:
+                        XuatDSTS(ts, n);
+                        break;
+                    case 3:
+                        ChinhSuaDSTS(ts, n);
+                        break;
+                    case 4:
+                        XoaDSTS(ts, ref n);
+                        break;
+                    case 5:
+                        Console.WriteLine("Thoát chương trình...");
+                        break;
+                    default:
+                        Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
+                        break;
+                }
+            } while (luaChon != 5);
         }
     }
 }
