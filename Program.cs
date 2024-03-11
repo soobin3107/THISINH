@@ -2,96 +2,41 @@ using System;
 
 namespace ThiSinh
 {
-    // Class ThiSinh để định nghĩa thông tin của một thí sinh
-    public class ThiSinh
-    {
-        public string MaThiSinh { get; set; }
-        public string HoTen { get; set; }
-        public float DiemToan { get; set; }
-        public float DiemLy { get; set; }
-        public float DiemHoa { get; set; }
-        public float DiemTong { get; set; }
-    }
-
-    // Class Nhập/Xuất để quản lý việc nhập và xuất thông tin thí sinh
-    public class NhapXuatThiSinh
-    {
-        // Hàm nhập thông tin của một thí sinh
-        public static void NhapThiSinh(ref ThiSinh a)
-        {
-            Console.Write("Nhập Mã Thí Sinh: ");
-            a.MaThiSinh = Console.ReadLine();
-
-            Console.Write("Nhập Họ Tên Thí Sinh: ");
-            a.HoTen = Console.ReadLine();
-
-            Console.Write("Nhập Điểm Toán: ");
-            a.DiemToan = float.Parse(Console.ReadLine());
-
-            Console.Write("Nhập Điểm Lý: ");
-            a.DiemLy = float.Parse(Console.ReadLine());
-
-            Console.Write("Nhập Điểm Hóa: ");
-            a.DiemHoa = float.Parse(Console.ReadLine());
-
-            a.DiemTong = a.DiemToan + a.DiemLy + a.DiemHoa;
-        }
-
-        // Hàm xuất thông tin của một thí sinh
-        public static void XuatThiSinh(ThiSinh a)
-        {
-            Console.WriteLine($"Mã Thí Sinh: {a.MaThiSinh}");
-            Console.WriteLine($"Họ Tên: {a.HoTen}");
-            Console.WriteLine($"Điểm Toán: {a.DiemToan}");
-            Console.WriteLine($"Điểm Lý: {a.DiemLy}");
-            Console.WriteLine($"Điểm Hóa: {a.DiemHoa}");
-            Console.WriteLine($"Điểm Tổng: {a.DiemTong}");
-        }
-    }
-
-    // Class Program để chứa phương thức Main và các thực thi khác
     public class Program
     {
-        const int N = 100;
-
-        // Hàm nhập danh sách thí sinh
-        static void NhapDSTS(ThiSinh[] ts, ref int n)
+        // Hàm nhập danh sách thí sinh vào phòng thi
+        static void NhapDSTS(PhongThi phongThi)
         {
             Console.Write("\nNhập số lượng Thí Sinh: ");
-            n = int.Parse(Console.ReadLine());
+            int n = int.Parse(Console.ReadLine());
             for (int i = 0; i < n; i++)
             {
-                ts[i] = new ThiSinh();
+                ThiSinh thiSinh = new ThiSinh();
                 Console.WriteLine("---------------------------");
                 Console.WriteLine($"---Thí Sinh thứ {i + 1}---");
-                NhapXuatThiSinh.NhapThiSinh(ref ts[i]);
+                NhapXuatThiSinh.NhapThiSinh(ref thiSinh);
+                phongThi.ThemThiSinh(thiSinh); // Thêm thí sinh vào phòng thi
             }
         }
 
-        // Hàm xuất danh sách thí sinh
-        static void XuatDSTS(ThiSinh[] ts, int n)
+        // Hàm xuất danh sách thí sinh trong phòng thi
+        static void XuatDSTS(PhongThi phongThi)
         {
-            Console.WriteLine("\n=-=DANH SÁCH CÁC THÍ SINH=-=");
-            for (int i = 0; i < n; i++)
-            {
-                Console.WriteLine($"---Thí Sinh thứ {i + 1}---");
-                NhapXuatThiSinh.XuatThiSinh(ts[i]);
-                Console.WriteLine("---------------------------");
-            }
+            phongThi.XuatDanhSachThiSinh(); // Xuất danh sách thí sinh trong phòng thi
         }
 
-        // Hàm chỉnh sửa thông tin của một thí sinh
-        static void ChinhSuaDSTS(ThiSinh[] ts, int n)
+        // Hàm Chỉnh sửa Danh sách thí sinh trong phòng thi
+        static void ChinhSuaDSTS(PhongThi phongThi)
         {
-            Console.Write("Nhập mã thí sinh cần chỉnh sửa: ");
+            Console.Write("\nNhập mã thí sinh cần chỉnh sửa: ");
             string maThiSinh = Console.ReadLine();
             bool found = false;
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < phongThi.SoLuongThiSinh; i++)
             {
-                if (ts[i].MaThiSinh == maThiSinh)
+                if (phongThi.DanhSachThiSinh[i].MaThiSinh == maThiSinh)
                 {
-                    Console.WriteLine("Nhập thông tin mới:");
-                    NhapXuatThiSinh.NhapThiSinh(ref ts[i]);
+                    Console.WriteLine("--Nhập thông tin mới--");
+                    NhapXuatThiSinh.NhapThiSinh(ref phongThi.DanhSachThiSinh[i]);
                     found = true;
                     break;
                 }
@@ -102,21 +47,21 @@ namespace ThiSinh
             }
         }
 
-        // Hàm xóa thông tin của một thí sinh
-        static void XoaDSTS(ThiSinh[] ts, ref int n)
+        // Hàm xóa thông tin của một thí sinh trong phòng thi
+        static void XoaDSTS(PhongThi phongThi)
         {
-            Console.Write("Nhập mã thí sinh cần xóa: ");
+            Console.Write("\nNhập mã thí sinh cần xóa: ");
             string maThiSinh = Console.ReadLine();
             bool found = false;
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < phongThi.SoLuongThiSinh; i++)
             {
-                if (ts[i].MaThiSinh == maThiSinh)
+                if (phongThi.DanhSachThiSinh[i].MaThiSinh == maThiSinh)
                 {
-                    for (int j = i; j < n - 1; j++)
+                    for (int j = i; j < phongThi.SoLuongThiSinh - 1; j++)
                     {
-                        ts[j] = ts[j + 1];
+                        phongThi.DanhSachThiSinh[j] = phongThi.DanhSachThiSinh[j + 1];
                     }
-                    n--;
+                    phongThi.SoLuongThiSinh--;
                     found = true;
                     Console.WriteLine("Xóa thành công.");
                     break;
@@ -128,13 +73,13 @@ namespace ThiSinh
             }
         }
 
+
         // Hàm Main để chạy chương trình
         public static void Main()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            ThiSinh[] ts = new ThiSinh[N];
-            int n = 0;
+            PhongThi phongA = new PhongThi("A", 50); // Tạo một phòng thi có tên A với sức chứa 50 thí sinh
 
             int luaChon;
             do
@@ -151,16 +96,16 @@ namespace ThiSinh
                 switch (luaChon)
                 {
                     case 1:
-                        NhapDSTS(ts, ref n);
+                        NhapDSTS(phongA);
                         break;
                     case 2:
-                        XuatDSTS(ts, n);
+                        XuatDSTS(phongA);
                         break;
                     case 3:
-                        ChinhSuaDSTS(ts, n);
+                        ChinhSuaDSTS(phongA);
                         break;
                     case 4:
-                        XoaDSTS(ts, ref n);
+                        XoaDSTS(phongA);
                         break;
                     case 5:
                         Console.WriteLine("Thoát chương trình...");
