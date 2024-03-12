@@ -4,7 +4,6 @@ namespace ThiSinh
 {
     public class Program
     {
-        // Hàm nhập danh sách thí sinh vào phòng thi
         static void NhapDSTS(PhongThi phongThi)
         {
             Console.Write("\nNhập số lượng Thí Sinh: ");
@@ -19,25 +18,36 @@ namespace ThiSinh
             }
         }
 
-        // Hàm xuất danh sách thí sinh trong phòng thi
+        // Hàm xuất thông tin của thí sinh
         static void XuatDSTS(PhongThi phongThi)
         {
-            phongThi.XuatDanhSachThiSinh(); // Xuất danh sách thí sinh trong phòng thi
+            if (phongThi.DanhSachThiSinh != null && phongThi.DanhSachThiSinh.Count > 0)
+            {
+                phongThi.XuatDanhSachThiSinh();
+            }
+            else
+            {
+                Console.WriteLine("Không có thí sinh nào trong phòng thi.");
+            }
         }
 
-        // Hàm Chỉnh sửa Danh sách thí sinh trong phòng thi
+
+        // Hàm Chỉnh sửa danh sách thí sinh trong phòng thi
         static void ChinhSuaDSTS(PhongThi phongThi)
         {
             Console.Write("\nNhập mã thí sinh cần chỉnh sửa: ");
             string maThiSinh = Console.ReadLine();
             bool found = false;
-            for (int i = 0; i < phongThi.SoLuongThiSinh; i++)
+            for (int i = 0; i < phongThi.DanhSachThiSinh.Count; i++)
             {
                 if (phongThi.DanhSachThiSinh[i].MaThiSinh == maThiSinh)
                 {
                     Console.WriteLine("--Nhập thông tin mới--");
-                    NhapXuatThiSinh.NhapThiSinh(ref phongThi.DanhSachThiSinh[i]);
+                    ThiSinh thiSinh = phongThi.DanhSachThiSinh[i];
+                    NhapXuatThiSinh.NhapThiSinh(ref thiSinh);
+                    phongThi.DanhSachThiSinh[i] = thiSinh;
                     found = true;
+                    Console.WriteLine("Chỉnh sửa thành công.");
                     break;
                 }
             }
@@ -45,6 +55,25 @@ namespace ThiSinh
             {
                 Console.WriteLine("Không tìm thấy thí sinh có mã số đã nhập.");
             }
+        }
+
+        // Hàm thay đổi phòng thi của thí sinh
+        static void ThayDoiPhongThi(PhongThi phongThi)
+        {
+            Console.Write("\nNhập mã thí sinh cần thay đổi phòng thi: ");
+            string maThiSinh = Console.ReadLine();
+            Console.Write("Nhập phòng thi mới: ");
+            string phongThiMoi = Console.ReadLine();
+            foreach (ThiSinh thiSinh in phongThi.DanhSachThiSinh)
+            {
+                if (thiSinh.MaThiSinh == maThiSinh)
+                {
+                    thiSinh.MaPhong = phongThiMoi;
+                    Console.WriteLine("Thay đổi phòng thi thành công");
+                    return;
+                }
+            }
+            Console.WriteLine("Không tìm thấy Thí Sinh có mã số đã nhập.");
         }
 
         // Hàm xóa thông tin của một thí sinh trong phòng thi
@@ -52,69 +81,87 @@ namespace ThiSinh
         {
             Console.Write("\nNhập mã thí sinh cần xóa: ");
             string maThiSinh = Console.ReadLine();
+
             bool found = false;
-            for (int i = 0; i < phongThi.SoLuongThiSinh; i++)
+            for (int i = 0; i < phongThi.DanhSachThiSinh.Count; i++)
             {
                 if (phongThi.DanhSachThiSinh[i].MaThiSinh == maThiSinh)
                 {
-                    for (int j = i; j < phongThi.SoLuongThiSinh - 1; j++)
-                    {
-                        phongThi.DanhSachThiSinh[j] = phongThi.DanhSachThiSinh[j + 1];
-                    }
-                    phongThi.SoLuongThiSinh--;
+                    phongThi.DanhSachThiSinh.RemoveAt(i); // Xóa thí sinh khỏi danh sách
                     found = true;
                     Console.WriteLine("Xóa thành công.");
                     break;
                 }
             }
+
             if (!found)
             {
                 Console.WriteLine("Không tìm thấy thí sinh có mã số đã nhập.");
             }
         }
 
-
         // Hàm Main để chạy chương trình
         public static void Main()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            PhongThi phongA = new PhongThi("A", 50); // Tạo một phòng thi có tên A với sức chứa 50 thí sinh
+            int soLuongToiDa;
+
+            // Nhập số lượng thí sinh tối đa
+            Console.Write("Nhập số lượng thí sinh tối đa: ");
+            soLuongToiDa = int.Parse(Console.ReadLine());
+
+            PhongThi phongA = new PhongThi(" ", soLuongToiDa);
 
             int luaChon;
             do
             {
                 Console.WriteLine("\n---MENU---");
-                Console.WriteLine("1. Nhập dữ liệu");
-                Console.WriteLine("2. Xuất dữ liệu");
-                Console.WriteLine("3. Chỉnh sửa dữ liệu");
-                Console.WriteLine("4. Xóa dữ liệu");
-                Console.WriteLine("5. Thoát chương trình");
-                Console.Write("Nhập lựa chọn của bạn: ");
+                Console.WriteLine("1. Nhập Thông Tin Thí Sinh");
+                Console.WriteLine("2. Xuất Thông Tin Thí Sinh");
+                Console.WriteLine("3. Chỉnh Sửa Thông Tin Thí Sinh Trong Phòng Thi");
+                Console.WriteLine("4. Thay đổi Phòng Thi của Thí Sinh");
+                Console.WriteLine("5. Xóa Dữ Liệu của Thí Sinh");
+                Console.WriteLine("6. Thoát Chương Trình");
+                Console.Write("Nhập Lựa Chọn của Bạn: ");
                 luaChon = int.Parse(Console.ReadLine());
 
                 switch (luaChon)
                 {
                     case 1:
+                        Console.WriteLine("\n===============================");
                         NhapDSTS(phongA);
+                        Console.WriteLine("\n===============================");
                         break;
                     case 2:
+                        Console.WriteLine("\n===============================");
                         XuatDSTS(phongA);
+                        Console.WriteLine("\n===============================");
                         break;
                     case 3:
+                        Console.WriteLine("\n===============================");
                         ChinhSuaDSTS(phongA);
+                        Console.WriteLine("\n===============================");
                         break;
                     case 4:
-                        XoaDSTS(phongA);
+                        Console.WriteLine("\n===============================");
+                        ThayDoiPhongThi(phongA);
+                        Console.WriteLine("\n===============================");
                         break;
                     case 5:
+                        Console.WriteLine("\n===============================");
+                        XoaDSTS(phongA);
+                        Console.WriteLine("\n===============================");
+                        break;
+                    case 6:
                         Console.WriteLine("Thoát chương trình...");
                         break;
                     default:
                         Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
                         break;
                 }
-            } while (luaChon != 5);
+            } while (luaChon != 6);
         }
+
     }
 }
