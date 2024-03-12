@@ -1,26 +1,37 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
 namespace ThiSinh
 {
     public class PhongThi
     {
         public string MaPhong { get; set; }
-        public ThiSinh[] DanhSachThiSinh { get; set; }
+        public List<ThiSinh> DanhSachThiSinh { get; set; }
         public int SoLuongThiSinh { get; set; }
 
         public PhongThi(string maPhong, int maxSoLuongThiSinh)
         {
             MaPhong = maPhong;
-            DanhSachThiSinh = new ThiSinh[maxSoLuongThiSinh];
-            SoLuongThiSinh = 0;
+            DanhSachThiSinh = new List<ThiSinh>(maxSoLuongThiSinh);
+            // Khởi tạo List với số lượng tối đa được chỉ định
+        }
+
+        // Cập nhật hàm tạo để chấp nhận mã phòng và số lượng tối đa từ người dùng
+        public PhongThi()
+        {
+            Console.WriteLine("Nhập mã phòng thi: ");
+            MaPhong = Console.ReadLine();
+            Console.WriteLine("Nhập số lượng tối đa của phòng thi: ");
+            int maxSoLuongThiSinh = int.Parse(Console.ReadLine());
+            DanhSachThiSinh = new List<ThiSinh>(maxSoLuongThiSinh);
+            // Khởi tạo List với số lượng tối đa được chỉ định
         }
 
         public void ThemThiSinh(ThiSinh thiSinh)
         {
-            if (SoLuongThiSinh < DanhSachThiSinh.Length)
+            if (SoLuongThiSinh < DanhSachThiSinh.Capacity) // Kiểm tra xem danh sách đã đầy chưa
             {
-                DanhSachThiSinh[SoLuongThiSinh] = thiSinh;
-                SoLuongThiSinh++;
+                DanhSachThiSinh.Add(thiSinh); // Thêm thí sinh vào danh sách
             }
             else
             {
@@ -30,12 +41,12 @@ namespace ThiSinh
 
         public void XuatDanhSachThiSinh()
         {
-            Console.WriteLine($"\nDanh sách thí sinh trong phòng {MaPhong}");
-            for (int i = 0; i < SoLuongThiSinh; i++)
+            int i = 0;
+            foreach (ThiSinh thiSinh in DanhSachThiSinh)
             {
-                Console.WriteLine($"---Thí sinh {i + 1}---");
-                NhapXuatThiSinh.XuatThiSinh(DanhSachThiSinh[i]);
-                Console.WriteLine();
+                Console.WriteLine($"\n---Thí sinh {i + 1}---");
+                NhapXuatThiSinh.XuatThiSinh(thiSinh);
+                i++;
             }
         }
     }
